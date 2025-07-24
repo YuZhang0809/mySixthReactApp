@@ -6,7 +6,7 @@
 
 ## 📊 项目进度概览
 - **里程碑 1**: ✅ 完成 (5/5 任务)
-- **里程碑 2**: 🔄 进行中 (1/5 任务)
+- **里程碑 2**: 🔄 进行中 (2/5 任务)
 - **里程碑 3&4**: ⏳ 待开始 (0/5 任务)  
 - **里程碑 5**: ⏳ 待开始 (0/2 任务)
 
@@ -70,18 +70,20 @@
     2. 在文件中定义支出的初始状态 `initialState` (例如一个空数组)。
     3. 实现 reducer 函数，该函数能处理 `'ADD_EXPENSE'`, `'DELETE_EXPENSE'`, `'EDIT_EXPENSE'` 三种 action 类型，并返回新的状态。
 
-### 任务 2.2: 创建 `ExpensesContext` 并提供全局状态
+### 任务 2.2: 创建 `ExpensesContext` 并提供全局状态 ✅
 - **描述:** 创建一个 React Context，利用 `useReducer` 将 state 和 dispatch 函数提供给整个应用。
 - **预计耗时:** 1 小时
+- **完成日期:** 2024-07-28
 - **完成标准:**
     1. 创建 `src/context/ExpensesContext.jsx` 文件。
     2. 在文件中使用 `createContext` 创建 `ExpensesContext`。
     3. 创建 `ExpensesProvider` 组件，内部使用 `useReducer` 挂接 `expensesReducer`，并通过 Context.Provider 将 `state` 和 `dispatch` 暴露出去。
     4. 在 `App.jsx` 或 `main.jsx` 中，用 `ExpensesProvider` 包裹整个应用。
 
-### 任务 2.3: 创建支出表单组件 (`ExpenseForm.jsx`)
+### 任务 2.3: 创建支出表单组件 (`ExpenseForm.jsx`) ✅
 - **描述:** 构建一个可复用的表单，用于新增和编辑支出。
 - **预计耗时:** 1 小时
+- **完成日期:** 2024-07-28
 - **完成标准:**
     1. 在 `src/components` 目录下创建 `ExpenseForm.jsx`。
     2. 组件内部使用 `useState` 管理表单字段（金额、类别、日期、备注）。

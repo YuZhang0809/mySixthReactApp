@@ -6,6 +6,7 @@ import BudgetPage from './pages/BudgetPage';
 import SettingsPage from './pages/SettingsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import Layout from './components/Layout';
+import { ExpensesProvider } from './context/ExpensesContext';
 
 const routeConfig = [
   {
@@ -27,7 +28,9 @@ function App() {
 
   return (
     <>
-      <RouterProvider router={route} />
+      <ExpensesProvider>
+        <RouterProvider router={route} />
+      </ExpensesProvider>
     </>
   )
 }
