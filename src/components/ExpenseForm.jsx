@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from 'react'
 import { useExpenses } from '../context/ExpensesContext'
+import { EXPENSE_ACTIONS } from '../context/expensesReducer'
 
 // 预定义支出类别
 const EXPENSE_CATEGORIES = [
@@ -8,7 +9,7 @@ const EXPENSE_CATEGORIES = [
 ]
 
 // eslint-disable-next-line no-unused-vars
-export default function ExpenseForm({ expenseToEdit, onCancel }) {
+export default function ExpenseForm({ expenseToEdit, onCancel, onEditSubmit}) {
   // eslint-disable-next-line no-unused-vars
   const { dispatch } = useExpenses()
 
@@ -110,10 +111,16 @@ export default function ExpenseForm({ expenseToEdit, onCancel }) {
 
     if (amountValid && categoryValid) {
         if (expenseToEdit) {
-            dispatch({payload:{id:expenseToEdit.id,...expense, amount: parseInt(expense.amount, 10) || 0},type: 'EDIT_EXPENSE'})
+            dispatch({payload:{id:expenseToEdit.id,...expense, amount: parseInt(expense.amount, 10) || 0},type: EXPENSE_ACTIONS.EDIT_EXPENSE})
+            if (onEditSubmit) {
+                onEditSubmit(expenseToEdit)
+            }
         } else {
-            dispatch({payload:{...expense, amount: parseInt(expense.amount, 10) || 0},type: 'ADD_EXPENSE'})
+            dispatch({payload:{...expense, amount: parseInt(expense.amount, 10) || 0},type: EXPENSE_ACTIONS.ADD_EXPENSE})
         }
+    }
+    else{
+        alert('输入的支出格式不正确！')
     }
   }
 
@@ -138,7 +145,8 @@ export default function ExpenseForm({ expenseToEdit, onCancel }) {
         )
     }
     if (onCancel){
-        onCancel()
+        onCancel(expenseToEdit)
+        
     }
   }
 
