@@ -7,6 +7,7 @@ import SettingsPage from './pages/SettingsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import Layout from './components/Layout';
 import { ExpensesProvider } from './context/ExpensesContext';
+import { BudgetsProvider } from './context/BudgetsContext';
 
 const routeConfig = [
   {
@@ -29,7 +30,9 @@ function App() {
   return (
     <>
       <ExpensesProvider>
-        <RouterProvider router={route} />
+        <BudgetsProvider>
+          <RouterProvider router={route} />
+        </BudgetsProvider>
       </ExpensesProvider>
     </>
   )
