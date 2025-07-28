@@ -30,7 +30,13 @@ export default function BudgetForm() {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        dispatch({payload: budgetToEdit, type: BUDGETS_ACTIONS.SET_BUDGET})
+        dispatch({
+            type: BUDGETS_ACTIONS.SET_BUDGET,
+            payload: {
+                category: budgetToEdit.category,
+                amount: parseInt(budgetToEdit.amount, 10)
+            }
+        })
         setBudgetToEdit({category:'',amount:0})
     }
 
@@ -50,7 +56,7 @@ export default function BudgetForm() {
                 }
 
             </select>
-            <input type='number' value={budgetToEdit.amount} onChange={handleAmountChange}></input>
+            <input type='number' value={budgetToEdit.amount === -1? 0 :budgetToEdit.amount} onChange={handleAmountChange}></input>
             <button type='submit'>设置</button>
         </form>
     </>

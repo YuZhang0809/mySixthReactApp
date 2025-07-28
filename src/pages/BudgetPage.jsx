@@ -5,8 +5,6 @@ import BudgetForm from '../components/BudgetForm'
 
 export default function BudgetPage() {
 
-  const {budgets, dispatch} = useBudgets()
-
   return (
     <>
       <div>

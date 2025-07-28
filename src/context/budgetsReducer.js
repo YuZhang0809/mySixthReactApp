@@ -29,14 +29,16 @@ export const budgetsReducer = (state, action) => {
  
         case BUDGETS_ACTIONS.DELETE_BUDGET:{
             const category = action.payload
-            const newState = {...state}
-            delete newState[category] 
-            return newState
+            return {...state, [category]: null}
         }
 
 
         case BUDGETS_ACTIONS.CLEAR_ALL_BUDGETS:{
-            return {}
+            const newState = Object.fromEntries(
+                Object.keys(state).map(key => [key, null])
+              );
+              
+            return newState
         }
 
         case BUDGETS_ACTIONS.RESET_BUDGETS:{
