@@ -55,12 +55,13 @@ export const expensesReducer = (state, action) => {
   amount: number,       // 金额
   category: string,     // 类别
   note: string,         // 备注
-  createdAt: string,    // 创建日期 (ISO字符串)
+  date: string,         // 支出发生日期 (YYYY-MM-DD格式，如 "2024-12-19")
+  createdAt: string,    // 记录创建时间 (ISO字符串)
   updatedAt: string     // 最后修改日期 (ISO字符串)
 }
 
 Action 结构参考：
-ADD_EXPENSE: { type: 'ADD_EXPENSE', payload: { amount, category, note } }
+ADD_EXPENSE: { type: 'ADD_EXPENSE', payload: { amount, category, note, date } }
 DELETE_EXPENSE: { type: 'DELETE_EXPENSE', payload: { id } }
 EDIT_EXPENSE: { type: 'EDIT_EXPENSE', payload: { id, ...updatedFields } }
 */ 

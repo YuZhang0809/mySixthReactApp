@@ -12,6 +12,7 @@ export default function DashboardPage() {
 }
 
   const {expenses} = useExpenses()
+  const [selectedMonthFilter, setSelectedMonthFilter] = useState(getCurrentYearMonth());
   const [filter, setFilter] = useState({'currentDate':getCurrentYearMonth() })
 
   const expensesState = useMemo(() => {
@@ -64,15 +65,28 @@ export default function DashboardPage() {
 
   }, [expenses, filter.currentDate])
 
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    setFilter(prev => ({...prev, 'currentDate': selectedMonthFilter}))
+  }
+
+  const handleMonthChange = (e) => {
+    setSelectedMonthFilter(e.target.value);
+  }
+
   return (
     <>
       <div>DashboardPage</div>
+      <form onSubmit={handleSubmit}>
+        <input type='month' id='monthInput' onChange={handleMonthChange} value={selectedMonthFilter} />
+        <button type='submit'>过滤</button>
+      </form>
       <div>
         <ul>
           {Object.entries(expensesState.categories).map((expenseState) => {
             return <li key={expenseState[0]}>类别：{expenseState[0]}，金额：{expenseState[1].amount}百分比：{expenseState[1].percentage}%</li>
           })}
-          <li><li key={'totalAmount'}>类别：{'合计'}，金额：{expensesState.totalAmount}</li></li>
+          <li key={'totalAmount'}>类别：{'合计'}，金额：{expensesState.totalAmount}</li>
         </ul>
       </div>
     </>

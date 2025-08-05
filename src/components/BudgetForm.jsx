@@ -13,10 +13,10 @@ const Options = [
     { value: '其他', label: '其他' },
   ];
 
-export default function BudgetForm() {
+export default function BudgetForm({filter}) {
 
     const {budgets, dispatch} = useBudgets()
-    const [budgetToEdit, setBudgetToEdit] = useState({category:'',amount:0})
+    const [budgetToEdit, setBudgetToEdit] = useState({category: '',amount: 0, filterData: filter.date})
     const [errors, setErrors] = useState({})
     
     const validateField = (type,value) => {
@@ -47,7 +47,9 @@ export default function BudgetForm() {
     const handleCategoryChange = (e) => {
         const categoryToEdit = e.target.value
         validateField('category',categoryToEdit)
-        setBudgetToEdit({category:categoryToEdit, amount:Object.hasOwn(budgets, categoryToEdit)?budgets[categoryToEdit]:0})
+        const currentMonthData = budgets.find(monthData => monthData.date === filter.date)
+        const currentAmount = currentMonthData?.budgets?.[categoryToEdit] || 0
+        setBudgetToEdit({...budgetToEdit, category:categoryToEdit, amount:currentAmount})
     }
 
     const handleAmountChange = (e) => {
@@ -69,16 +71,17 @@ export default function BudgetForm() {
                 type: BUDGETS_ACTIONS.SET_BUDGET,
                 payload: {
                     category: budgetToEdit.category,
-                    amount: parseInt(budgetToEdit.amount, 10)
+                    amount: parseInt(budgetToEdit.amount, 10),
+                    date: budgetToEdit.filterData
                 }
             })
-            setBudgetToEdit({category:'',amount:0})
+            setBudgetToEdit(prev => ({...prev, category:'',amount:0}))
         }else{alert('请输入正确的值！')}
     }
 
   return (
     <>
-        <div>预算设置</div>
+        <div>{budgetToEdit.filterData}预算设置</div>
         <form onSubmit={handleSubmit}>
             <select value={budgetToEdit.category} onChange={handleCategoryChange}>
                 {
