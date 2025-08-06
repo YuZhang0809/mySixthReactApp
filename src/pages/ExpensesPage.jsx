@@ -1,30 +1,32 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { useExpenses } from '../context/ExpensesContext'
 import ExpenseForm from '../components/ExpenseForm'
 import { EXPENSE_ACTIONS } from '../context/expensesReducer'
+import ExpenseItem from '../components/ExpenseItem'
 
 export default function ExpensesPage() {
 
   const {expenses, dispatch} = useExpenses()
   const [expensesToEdit, setExpensesToEdit] = useState([])
 
-  function handleCancel(expense){
+  const handleCancel = useCallback(expense => {
     const newExpensesToEdit = expensesToEdit.filter((e) => e.id !== expense.id)
-    setExpensesToEdit(newExpensesToEdit)
-  }
+    setExpensesToEdit(newExpensesToEdit)  
+  },[expensesToEdit])
 
-  function handleEditSubmit(expense){
+
+  const handleEditSubmit = useCallback(expense => {
     const newExpensesToEdit = expensesToEdit.filter((e) => e.id !== expense.id)
-    setExpensesToEdit(newExpensesToEdit)
-  }
+    setExpensesToEdit(newExpensesToEdit)    
+  },[expensesToEdit])
 
-  function handleEdit(expense){
+  const handleEdit = useCallback(expense => {
     setExpensesToEdit(prev => [...prev, expense])
-  }
+  },[])
 
-  function handleDelete(expense){
+  const handleDelete = useCallback(expense => {
     dispatch({payload: expense, type: EXPENSE_ACTIONS.DELETE_EXPENSE})
-  }
+  },[dispatch])
 
   return (
     <>
@@ -54,16 +56,7 @@ export default function ExpensesPage() {
                   ) : (
                     <>
                       <div>
-                        <div>
-                          <span>🏷️ {expense.category}</span>
-                          <span>💰 ¥{expense.amount}</span>
-                          <span>📅 {expense.date}</span>
-                        </div>
-                        <div>📝 {expense.note || '无备注'}</div>
-                      </div>
-                      <div>
-                        <button onClick={() => handleEdit(expense)}>编辑</button>
-                        <button onClick={() => handleDelete(expense)}>删除</button>
+                        <ExpenseItem onEdit={handleEdit} onDelete={handleDelete} expense={expense}></ExpenseItem>
                       </div>
                     </>
                   )}

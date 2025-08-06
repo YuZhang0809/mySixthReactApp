@@ -13,16 +13,6 @@ export const BUDGETS_ACTIONS = {
     RESET_BUDGETS: 'RESET_BUDGETS'
 }
 
-// export const initialState = {
-//     '餐饮': 100,
-//     '交通': 100, 
-//     '购物': 100, 
-//     '娱乐': 100, 
-//     '医疗': 100, 
-//     '教育': 100, 
-//     '其他': 100
-// }
-
 const getCurrentYearMonth = () => {
     const now = new Date()
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`

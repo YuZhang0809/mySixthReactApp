@@ -54,7 +54,7 @@ export default function BudgetList({filter}) {
                     stats[category] = {...stats[category],
                         status:'over-budget',
                         overspent: spent - budget,
-                        message:`已超预算${spent - budget}`,
+                        message:-`已超预算${spent - budget}`,
                         remaining: 0
                     }
                 }

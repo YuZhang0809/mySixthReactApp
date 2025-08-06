@@ -7,10 +7,10 @@
 ## 📊 项目进度概览
 - **里程碑 1**: ✅ 完成 (5/5 任务)
 - **里程碑 2**: ✅ 完成 (5/5 任务)
-- **里程碑 3&4**: ⏳ 进行中 (5/6 任务)  
+- **里程碑 3&4**: ✅ 完成 (6/6 任务)  
 - **里程碑 5**: ⏳ 待开始 (0/2 任务)
 
-**总体进度**: 15/18 任务完成 (83%)
+**总体进度**: 16/18 任务完成 (89%)
 
 ## 里程碑 1: 项目搭建与基础路由 ✅ COMPLETED (预计 2-3 小时)
 
@@ -159,12 +159,43 @@
     4. 修改 `BudgetForm.jsx`，支持为指定月份设置预算。
     5. 更新 `BudgetList.jsx` 中的 `useMemo` 计算逻辑，确保预算使用情况基于当前选中月份计算。
 
-### 任务 3.6: (memo/useCallback) 性能优化
+### 任务 3.6: (memo/useCallback) 性能优化 ✅
 - **描述:** 对接收回调函数的子组件应用 `React.memo` 和 `useCallback` 进行性能优化。
-- **预计耗时:** 0.5 小时
+- **完成日期:** 2024-12-19
+- **预计耗时:** 1 小时
 - **完成标准:**
-    1. 将渲染单条支出记录的组件（例如 `ExpenseItem.jsx`）用 `React.memo` 包裹。
-    2. 在父组件（例如 `ExpensesPage.jsx`）中，传递给 `ExpenseItem.jsx` 的事件处理函数（如 `handleDelete`, `handleEdit`）都用 `useCallback` 包裹。
+    1. **创建 ExpenseItem 组件并应用 React.memo**
+    2. **在 ExpensesPage.jsx 中使用 useCallback 优化事件处理函数**
+    3. **重构支出列表渲染逻辑使用优化后的组件**
+
+#### 子任务 3.6.1: 创建优化的 ExpenseItem 组件 ✅
+- **描述:** 将单个支出项的渲染逻辑提取为独立组件，并用 React.memo 包裹实现性能优化。
+- **预计耗时:** 20 分钟
+- **完成标准:**
+    1. 在 `src/components` 目录下创建 `ExpenseItem.jsx` 文件。
+    2. 组件接收以下 props：`expense`、`onEdit`、`onDelete`。
+    3. 使用 `React.memo()` 包裹组件，实现浅比较优化。
+    4. 组件能正确显示支出的类别、金额、日期、备注信息。
+
+#### 子任务 3.6.2: useCallback 优化事件处理函数 ✅
+- **描述:** 在 ExpensesPage.jsx 中使用 useCallback 稳定化事件处理函数的引用。
+- **预计耗时:** 20 分钟
+- **完成标准:**
+    1. 导入 `useCallback` Hook。
+    2. 用 `useCallback` 包裹 `handleEdit` 函数，依赖项为空数组。
+    3. 用 `useCallback` 包裹 `handleDelete` 函数，依赖项为 `[dispatch]`。
+    4. 用 `useCallback` 包裹 `handleCancel` 函数，依赖项为 `[expensesToEdit]`。
+    5. 用 `useCallback` 包裹 `handleEditSubmit` 函数，依赖项为 `[expensesToEdit]`。
+
+#### 子任务 3.6.3: 重构支出列表渲染逻辑 ✅
+- **描述:** 用优化后的 ExpenseItem 组件替换原有的内联渲染逻辑。
+- **预计耗时:** 20 分钟
+- **完成标准:**
+    1. 导入 `ExpenseItem` 组件到 `ExpensesPage.jsx`。
+    2. 将 `expenses.map()` 中的内联JSX替换为 `<ExpenseItem />` 组件调用。
+    3. 正确传递所有必要的 props 给 `ExpenseItem`。
+    4. 确保编辑、删除、取消等功能正常工作。
+    5. 验证性能优化生效：添加新支出时，现有支出项不重新渲染。
 
 ---
 
