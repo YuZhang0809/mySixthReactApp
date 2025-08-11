@@ -1,17 +1,14 @@
-// eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from 'react'
 import { useExpenses } from '../context/ExpensesContext'
 import { EXPENSE_ACTIONS } from '../context/expensesReducer'
+import { useCategories } from "../context/CategoriesContext";
 
-// 预定义支出类别
-const EXPENSE_CATEGORIES = [
-  '餐饮', '交通', '购物', '娱乐', '医疗', '教育', '其他'
-]
-
-// eslint-disable-next-line no-unused-vars
 export default function ExpenseForm({ expenseToEdit, onCancel, onEditSubmit}) {
-  // eslint-disable-next-line no-unused-vars
   const { dispatch } = useExpenses()
+
+  // 预定义支出类别
+  const { categories } = useCategories()
+  const EXPENSE_CATEGORIES = [...categories]
 
   // TODO: 定义表单状态
   // 提示：需要 amount, category, date, note 字段
@@ -23,6 +20,8 @@ export default function ExpenseForm({ expenseToEdit, onCancel, onEditSubmit}) {
         note : ''
         }
     )
+
+  // 当历史记录中的类别已不在全局类别列表中时，通过 errors.category 提示
 
   // TODO: 定义验证错误状态
   const [errors, setErrors] = useState(
@@ -58,6 +57,22 @@ export default function ExpenseForm({ expenseToEdit, onCancel, onEditSubmit}) {
   ,[expenseToEdit]  
   )
 
+  // 兜底：当当前类别不在可选列表中时，回退为 '' 并给出提示
+  useEffect(() => {
+    if (expense.category && !categories.includes(expense.category)) {
+      setExpense(prev => ({ ...prev, category: '' }))
+      setErrors(prev => ({ ...prev, category: '该记录原类别已不存在，请重新选择' }))
+    } else {
+      setErrors(prev => {
+        const next = { ...prev }
+        if (next.category === '该记录原类别已不存在，请重新选择') {
+          delete next.category
+        }
+        return next
+      })
+    }
+    // 仅依赖类别源与当前选择，避免使用每次重建的本地数组
+  }, [categories, expense.category])
 
   // TODO: 实现输入变化处理函数
   // 提示：handleInputChange(e) - 更新状态 + 实时验证
@@ -85,6 +100,9 @@ export default function ExpenseForm({ expenseToEdit, onCancel, onEditSubmit}) {
             if (!value) {
                 newErrors[name] = '请选择类别'
             }
+            else if(!EXPENSE_CATEGORIES.includes(value)){
+                newErrors[name] = '类别不存在'
+            }
             else{
                 delete newErrors[name]
             }
@@ -107,7 +125,7 @@ export default function ExpenseForm({ expenseToEdit, onCancel, onEditSubmit}) {
     e.preventDefault() 
     // 直接检查值，不依赖 errors 状态
     const amountValid = expense.amount && parseInt(expense.amount) > 0
-    const categoryValid = expense.category !== ''
+    const categoryValid = expense.category !== '' && EXPENSE_CATEGORIES.includes(expense.category)
 
     if (amountValid && categoryValid) {
         if (expenseToEdit) {

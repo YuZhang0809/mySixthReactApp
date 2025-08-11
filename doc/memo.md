@@ -2,6 +2,18 @@
 
 ---
 
+### 2025-08-07: 全局类别管理与删除保护（Categories）
+
+* 主题: 用 Context + useReducer 管理“类别”的单一事实来源（Single Source of Truth），避免在表单中硬编码。
+* 关键点:
+  * 用 `CategoriesContext` 提供全局类别列表与增/删/改操作；表单通过该 Context 渲染下拉选项，彻底移除硬编码。
+  * 用 `useMemo` 从 `ExpensesContext` 和 `BudgetsContext` 派生“在用类别集合”，作为删除保护判断依据（有支出记录或任一月份预算非 null 即视为在用）。
+  * 用 `useCallback` 稳定化设置/删除/重命名的事件处理器，配合 `React.memo` 降低无关渲染。
+  * UI 规则：在设置页显示每个类别的使用计数与删除按钮；若在用则禁用删除并给出原因提示。
+  * 渐进式演进：当前继续使用“名称即标识”的字符串模型；如需重命名，再统一迁移 `expenses` 与 `budgets` 中的引用。统一持久化留到“里程碑 10”。
+
+---
+
 本文档用于自动记录在构建 "Expense & Budget SPA" 过程中遇到的关键知识点、最佳实践和重要概念，以便于学习沉淀和未来回顾。
 
 每条记录都会包含日期、主题、以及具体的知识点或感悟。
@@ -36,3 +48,14 @@
     *   数组操作要格外小心：`[...state, newItem]` vs `[state, ...newItem]` 结果完全不同
     *   `map()` 返回数组，不需要额外包装：`state.map()` ✅ vs `[state.map()]` ❌
     *   严格比较 (`===`) 比宽松比较 (`==`) 更安全，避免意外的类型转换 
+
+---
+
+### 2025-08-10: 任务5.2 - 动态类别管理落地要点
+* **目标**: 移除表单中的硬编码类别，改用 `useCategories()` 作为单一数据源；在 reducer 层提供默认类别种子。
+* **实施清单**:
+  - 在 `src/context/categoriesReducer.js` 用默认类别初始化 `initialState`（餐饮、交通、购物、娱乐、医疗、教育、其他）。
+  - 在 `src/components/ExpenseForm.jsx` 与 `src/components/BudgetForm.jsx` 使用 `useCategories()` 获取选项，替换本地常量。
+  - 选择值保护：当所选类别在全局列表中不存在时，回退为 `''` 并提示。
+* **相关 Hook 与优化点**: 事件处理用 `useCallback` 稳定引用；删除保护与“在用类别集合”推导放到后续设置页（可用 `useMemo` 从收支/预算派生）。
+* **注意**：持久化统一在里程碑10处理，当前只做内存架构与表单一致性。

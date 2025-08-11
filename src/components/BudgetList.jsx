@@ -2,23 +2,25 @@ import React, { useMemo } from 'react'
 import { useBudgets } from '../context/BudgetsContext'
 import { useExpenses } from "../context/ExpensesContext";
 import { BUDGETS_ACTIONS } from '../context/budgetsReducer'
+import { useCategories } from '../context/CategoriesContext';
 
 export default function BudgetList({filter}) {
 
     const {budgets, dispatch} = useBudgets()
     const {expenses} = useExpenses()
+    const {categories} = useCategories()
 
     const handleDelete = (budgetCategory) => {
         dispatch({type:BUDGETS_ACTIONS.DELETE_BUDGET,payload:{category: budgetCategory, date: filter.date}})
     }
 
-    const handleClear = () => {
-        dispatch({type:BUDGETS_ACTIONS.CLEAR_ALL_BUDGETS})
-    }
+    // const handleClear = () => {
+    //     dispatch({type:BUDGETS_ACTIONS.CLEAR_ALL_BUDGETS})
+    // }
 
-    const handleReset = () => {
-        dispatch({type:BUDGETS_ACTIONS.RESET_BUDGETS})
-    }
+    // const handleReset = (categories) => {
+    //     dispatch({type:BUDGETS_ACTIONS.RESET_BUDGETS, payload:categories})
+    // }
 
     const budgetStates = useMemo(() => {
         const currentMonthData = budgets.find(monthData => monthData.date === filter.date)
@@ -32,9 +34,11 @@ export default function BudgetList({filter}) {
 
         const stats = {}
         if (monthBudgets) {
-            const allCategories = new Set(
-                [...expenses.map(exp => exp.category), ...Object.keys(monthBudgets)]
-            )
+            // 显示逻辑以“类别源”为准
+            // const allCategories = new Set(
+            //     [...expenses.map(exp => exp.category), ...Object.keys(monthBudgets)]
+            // )
+            const allCategories = new Set([...categories])
             allCategories.forEach(category => {
                 const spent = getSpentByCategory(category, filter.date)
                 const budget = monthBudgets[category] || 0 
@@ -71,14 +75,14 @@ export default function BudgetList({filter}) {
 
         return stats
     }
-        ,[budgets, expenses, filter.date])
+        ,[budgets, expenses, filter.date, categories])
 
 
   return (
     <>
         <div>月度预算清单</div>
-        <button onClick={handleReset}>重置所有预算</button>
-        <button onClick={handleClear}>删除所有预算</button>
+        {/* <button onClick={() => handleReset(categories)}>重置所有预算</button> */}
+        {/* <button onClick={handleClear}>删除所有预算</button> */}
         <ul>
             {budgetStates ? Object.entries(budgetStates).map((budgetState) => {
                 const {spent, status, budget, message, remaining} = budgetState[1]

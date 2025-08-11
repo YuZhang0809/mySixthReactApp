@@ -19,15 +19,7 @@ const getCurrentYearMonth = () => {
 }
 
 export const initialState = [{date: getCurrentYearMonth(),
-                            budgets:{
-                                    '餐饮': 100,
-                                    '交通': 100, 
-                                    '购物': 100, 
-                                    '娱乐': 100, 
-                                    '医疗': 100, 
-                                    '教育': 100, 
-                                    '其他': 100
-                            }
+                            budgets:{}
 }]
 
 
@@ -77,15 +69,17 @@ export const budgetsReducer = (state, action) => {
         }
 
 
-        case BUDGETS_ACTIONS.CLEAR_ALL_BUDGETS:{
-            return state.map(monthData => ({
-                ...monthData,
-                budgets :Object.fromEntries(Object.keys(monthData.budgets).map(category => [category, null]))
-            }))
-        }
+        // case BUDGETS_ACTIONS.CLEAR_ALL_BUDGETS:{
+        //     return state.map(monthData => ({
+        //         ...monthData,
+        //         budgets :Object.fromEntries(Object.keys(monthData.budgets).map(category => [category, null]))
+        //     }))
+        // }
 
         case BUDGETS_ACTIONS.RESET_BUDGETS:{
-            return [...initialState]
+            return [{date: getCurrentYearMonth(),
+                    budgets :Object.fromEntries(action.payload.map(category => [category, null]))}    
+            ]
         }
 
         default:

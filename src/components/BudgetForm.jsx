@@ -1,40 +1,41 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useBudgets } from '../context/BudgetsContext'
 import { BUDGETS_ACTIONS } from '../context/budgetsReducer';
+import { useCategories } from "../context/CategoriesContext";
 
-const Options = [
-    { value: '', label: '请选择种类', disabled: true },
-    { value: '餐饮', label: '餐饮' },
-    { value: '交通', label: '交通' },
-    { value: '购物', label: '购物' },
-    { value: '娱乐', label: '娱乐' },
-    { value: '医疗', label: '医疗' },
-    { value: '教育', label: '教育' },
-    { value: '其他', label: '其他' },
-  ];
+
 
 export default function BudgetForm({filter}) {
+
+    const { categories } = useCategories()
+    const Options = [
+        ...categories.map(category => ({value:category, label:category}))
+      ];
 
     const {budgets, dispatch} = useBudgets()
     const [budgetToEdit, setBudgetToEdit] = useState({category: '',amount: 0, filterData: filter.date})
     const [errors, setErrors] = useState({})
     
-    const validateField = (type,value) => {
+    const validateField = (name,value) => {
         
         const newErrors = { ...errors }
-        switch (type) {
+        switch (name) {
             case 'amount':
                 if (value < 0) {
-                    newErrors[type] = '请输入有效的大于0的金额'
+                    newErrors[name] = '请输入有效的非负金额'
                 }else{
-                    delete newErrors[type]
+                    delete newErrors[name]
                 }
                 break
             case 'category':
-                if(value === ''){
-                    newErrors[type] = '请选择类别！'
-                }else{
-                    delete newErrors[type]
+                if (!value) {
+                    newErrors[name] = '请选择类别'
+                }
+                else if(!categories.includes(value)){
+                    newErrors[name] = '类别不存在'
+                }
+                else{
+                    delete newErrors[name]
                 }
                 break
             default:
@@ -43,6 +44,23 @@ export default function BudgetForm({filter}) {
 
         setErrors(newErrors)
         }
+
+      // 兜底：当当前类别不在可选列表中时，回退为 '' 并给出提示
+    useEffect(() => {
+        if (budgetToEdit.category && !categories.includes(budgetToEdit.category)) {
+        setBudgetToEdit(prev => ({ ...prev, category: '' }))
+        setErrors(prev => ({ ...prev, category: '该记录原类别已不存在，请重新选择' }))
+        } else {
+        setErrors(prev => {
+            const next = { ...prev }
+            if (next.category === '该记录原类别已不存在，请重新选择') {
+            delete next.category
+            }
+            return next
+        })
+        }
+        // 仅依赖类别源与当前选择，避免使用每次重建的本地数组
+    }, [categories, budgetToEdit.category])
 
     const handleCategoryChange = (e) => {
         const categoryToEdit = e.target.value
@@ -64,7 +82,7 @@ export default function BudgetForm({filter}) {
         validateField('category', budgetToEdit.category)
         validateField('amount', budgetToEdit.amount)
 
-        const hasErrors = budgetToEdit.category === '' ||  budgetToEdit.amount < 0;
+        const hasErrors = budgetToEdit.category === '' ||  budgetToEdit.amount < 0 || !categories.includes(budgetToEdit.category);
 
         if (!hasErrors) {
             dispatch({
@@ -84,6 +102,7 @@ export default function BudgetForm({filter}) {
         <div>{budgetToEdit.filterData}预算设置</div>
         <form onSubmit={handleSubmit}>
             <select value={budgetToEdit.category} onChange={handleCategoryChange}>
+                <option value='' disabled>请选择种类</option>
                 {
                     Options.map(option => {
                         return(
@@ -96,7 +115,7 @@ export default function BudgetForm({filter}) {
 
             </select>
             {errors.category && <span>{errors.category}</span>}
-            <input type='number' value={budgetToEdit.amount === -1? 0 :budgetToEdit.amount} onChange={handleAmountChange}></input>
+            <input type='number' value={budgetToEdit.amount} onChange={handleAmountChange}></input>
             {errors.amount && <span>{errors.amount}</span>}
             <button type='submit'>设置</button>
         </form>

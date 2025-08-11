@@ -8,6 +8,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import Layout from './components/Layout';
 import { ExpensesProvider } from './context/ExpensesContext';
 import { BudgetsProvider } from './context/BudgetsContext';
+import { CategoriesProvider } from './context/CategoriesContext';
 
 const routeConfig = [
   {
@@ -31,7 +32,9 @@ function App() {
     <>
       <ExpensesProvider>
         <BudgetsProvider>
-          <RouterProvider router={route} />
+          <CategoriesProvider>
+            <RouterProvider router={route} />            
+          </CategoriesProvider>
         </BudgetsProvider>
       </ExpensesProvider>
     </>
