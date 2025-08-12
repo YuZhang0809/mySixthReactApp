@@ -9,6 +9,8 @@ import Layout from './components/Layout';
 import { ExpensesProvider } from './context/ExpensesContext';
 import { BudgetsProvider } from './context/BudgetsContext';
 import { CategoriesProvider } from './context/CategoriesContext';
+import { IncomesProvider } from "./context/IncomesContext";
+import IncomesPage from './pages/IncomesPage';
 
 const routeConfig = [
   {
@@ -19,6 +21,7 @@ const routeConfig = [
       {path: 'expenses', element: <ExpensesPage />},
       {path: 'budget', element: <BudgetPage />},
       {path: 'settings', element: <SettingsPage />},
+      {path: 'incomes', element: <IncomesPage />},
       {path: "*", element: <NotFoundPage />}
     ]
   }
@@ -33,7 +36,9 @@ function App() {
       <ExpensesProvider>
         <BudgetsProvider>
           <CategoriesProvider>
-            <RouterProvider router={route} />            
+            <IncomesProvider>
+              <RouterProvider router={route} />  
+            </IncomesProvider>         
           </CategoriesProvider>
         </BudgetsProvider>
       </ExpensesProvider>

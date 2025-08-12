@@ -26,6 +26,23 @@ export const useCategories = () => {
         throw new Error('useCategories must be used within a CategoriesProvider')
       }
 
-    return context
+    return {
+        categories: context.categories.expense,  // 只返回支出类别
+        dispatch: context.dispatch
+    }
+
+}
+
+export const useSources = () => {
+    const context = useContext(CategoriesContext)
+
+    if (context === null) {
+        throw new Error('useCategories must be used within a CategoriesProvider')
+      }
+
+    return {
+        categories: context.categories.income_source,  // 只返回收入类别
+        dispatch: context.dispatch
+    }
 
 }

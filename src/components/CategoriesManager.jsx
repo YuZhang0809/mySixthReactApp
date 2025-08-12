@@ -49,7 +49,7 @@ export default function CategoriesManager() {
     const handleSubmit = (e) => {
         e.preventDefault()
         if (validateField(editToCategory)) {
-            dispatch({type: CATEGORIES_ACTIONS.ADD_CATEGORY, payload:editToCategory.trim()})
+            dispatch({type: CATEGORIES_ACTIONS.ADD_EXPENSE_CATEGORY, payload:editToCategory.trim()})
             setEditToCategory('')
         }
     } 
@@ -65,7 +65,7 @@ export default function CategoriesManager() {
             return
         }
         if (!window.confirm(`确定要删除“${category}”？此操作不可撤销。`)) return
-        dispatch({ type: CATEGORIES_ACTIONS.DELETE_CATEGORY, payload: category })
+        dispatch({ type: CATEGORIES_ACTIONS.DELETE_EXPENSE_CATEGORY, payload: category })
     }
 
     // const handleEdit = (oldName, newName) => {
